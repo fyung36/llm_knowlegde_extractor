@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: llm_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/llmdb
+      - OPENAI_API_KEY=sk-xxx  # Optional if not mocking
+      - USE_LLM_MOCK=true
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: pg_llm
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: llmdb
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"

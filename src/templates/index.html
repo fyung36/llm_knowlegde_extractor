@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LLM Knowledge Extractor</title>
+    <script src="https://unpkg.com/htmx.org@1.9.4"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #005b9f;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            resize: vertical;
+        }
+
+        input[type="text"] {
+            width: 60%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 16px;
+            margin-top: 10px;
+            margin-left: 6px;
+            font-size: 1rem;
+            border: none;
+            background-color: #005b9f;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0072ce;
+        }
+
+        #result, #search-results {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        p, li {
+            font-size: 1rem;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>LLM Knowledge Extractor</h1>
+
+    <form hx-post="/analyze-ui" hx-target="#result" hx-swap="innerHTML">
+        <label for="text"><strong>Enter text to analyze:</strong></label><br>
+        <textarea name="text" rows="8" placeholder="Paste your text here..." required></textarea><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <div id="result"></div>
+
+    <h2>Search Analyses</h2>
+
+    <form hx-get="/search-ui" hx-target="#search-results" hx-swap="innerHTML">
+        <input type="text" name="topic" placeholder="Search by topic or keyword..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="search-results"></div>
+
+</body>
+</html>
+
