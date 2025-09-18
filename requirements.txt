@@ -1,12 +1,14 @@
 # --- Web Framework ---
 fastapi
 uvicorn[standard]
+itsdangerous
 
 # --- ORM & Database ---
 sqlalchemy>=2.0
 psycopg2-binary  # For PostgreSQL
 pydantic
 pydantic_settings
+python-multipart
 
 # --- Migration ---
 alembic

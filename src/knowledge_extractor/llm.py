@@ -1,12 +1,12 @@
 import json
 from src.config import settings
 from src.core.logger import get_logger
+from openai import OpenAI
 
 logger = get_logger("llm")
 
 if not settings.USE_LLM_MOCK:
-    import openai
-    openai.api_key = settings.OPENAI_API_KEY
+    client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 def analyze_text(text: str):
@@ -15,25 +15,30 @@ def analyze_text(text: str):
         return mock_llm_response(text)
 
     prompt = f"""
-    Analyze the following text and return a JSON object with:
-    - "title"
-    - "topics"
-    - "sentiment"
-    - "summary"
-    TEXT:{text}
-"""
+    Analyze the following text and return a JSON object with the following fields:
+    - "title" (string, if available)
+    - "topics" (list of 3 topics)
+    - "sentiment" (positive, neutral, or negative)
+    - "summary" (1–2 sentence summary)
+
+    TEXT:
+    {text}
+    """
 
     try:
         logger.debug("Sending prompt to OpenAI")
-        response = openai.ChatCompletion.create(
+
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=300,
-            temperature=0.5,
-            timeout=10
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that extracts structured data from text."},
+                {"role": "user", "content": prompt}
+            ]
         )
 
-        raw = response.choices[0].message["content"]
+        raw = response.choices[0].message.content
+        logger.debug(f"Raw response from LLM:\n{raw}")
+
         parsed = json.loads(raw)
 
         summary = parsed.get("summary")

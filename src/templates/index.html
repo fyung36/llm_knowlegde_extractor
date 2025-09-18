@@ -72,7 +72,7 @@
 
     <h1>LLM Knowledge Extractor</h1>
 
-    <form hx-post="/analyze-ui" hx-target="#result" hx-swap="innerHTML">
+    <form hx-post="/api/analyze-ui" hx-target="#result" hx-swap="innerHTML">
         <label for="text"><strong>Enter text to analyze:</strong></label><br>
         <textarea name="text" rows="8" placeholder="Paste your text here..." required></textarea><br>
         <button type="submit">Analyze</button>
@@ -82,7 +82,7 @@
 
     <h2>Search Analyses</h2>
 
-    <form hx-get="/search-ui" hx-target="#search-results" hx-swap="innerHTML">
+    <form hx-get="/api/search-ui" hx-target="#search-results" hx-swap="innerHTML">
         <input type="text" name="topic" placeholder="Search by topic or keyword..." required>
         <button type="submit">Search</button>
     </form>

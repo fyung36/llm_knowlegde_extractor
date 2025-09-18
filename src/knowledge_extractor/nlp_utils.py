@@ -4,15 +4,11 @@ import nltk
 from nltk import word_tokenize, pos_tag
 
 # Safe download guards
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-
-try:
-    nltk.data.find('taggers/averaged_perceptron_tagger')
-except LookupError:
-    nltk.download('averaged_perceptron_tagger')
+for resource in ['punkt', 'averaged_perceptron_tagger']:
+    try:
+        nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' else f'taggers/{resource}')
+    except LookupError:
+        nltk.download(resource)
 
 def extract_top_nouns(text: str, top_n: int = 3):
     if not text or len(text.strip()) < 5:

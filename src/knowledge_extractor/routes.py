@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -8,7 +10,12 @@ from src.knowledge_extractor import llm, nlp_utils
 from src.knowledge_extractor.crud import CreateService
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+print(BASE_DIR)
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+
+templates = Jinja2Templates(directory=TEMPLATE_DIR)
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -23,6 +30,7 @@ async def analyze_ui(
     db: Session = Depends(get_session)
 ):
     try:
+        create_servie = CreateService(db)
         if not text.strip():
             return HTMLResponse("<p>Error: Empty input.</p>")
 
@@ -30,7 +38,7 @@ async def analyze_ui(
         keywords = nlp_utils.extract_top_nouns(text)
         metadata["keywords"] = keywords
 
-        record = CreateService.create_analysis(db, text, summary, metadata)
+        record = create_servie.create_analysis(text, summary, metadata)
 
         return HTMLResponse(f"""
             <h3>Summary:</h3><p>{record.summary}</p>
@@ -49,7 +57,8 @@ async def search_ui(
     db: Session = Depends(get_session)
 ):
     try:
-        results = CreateService.search_by_topic_or_keyword(db, topic)
+        create_servie = CreateService(db)
+        results = create_servie.search_by_topic_or_keyword(topic)
 
         if not results:
             return HTMLResponse("<p>No results found.</p>")

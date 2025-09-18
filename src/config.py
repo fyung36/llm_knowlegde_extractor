@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     # === App ===
     DEBUG: bool = os.getenv("DEBUG", "false").lower() == "true"
     ALLOWED_ORIGINS: list[str] = ["*"]
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")  # development, staging, production
+    SECRET_KEY : str = os.getenv("SECRET_KEY", "supersecretkey")  # Change this in production!
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     @property
